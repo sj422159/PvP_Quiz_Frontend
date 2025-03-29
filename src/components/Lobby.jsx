@@ -85,7 +85,7 @@ const Lobby = ({ username }) => {
               className="start-btn"
               onClick={() => {
                 console.log("Game Start!");
-                window.location.href = "/Quiz";
+                window.location.href = "/PvPQuiz";
               }}
             >
               Start Game
