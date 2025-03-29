@@ -36,7 +36,7 @@ const Home = ({ players }) => {
 
   // 🔹 Navigate to Game.jsx
   const handleStartGame = () => {
-    navigate("/lobby"); // ✅ Redirects to Lobby instead of Game
+    navigate("/PvPQuiz"); // ✅ Redirects to Lobby instead of Game
 };
 
 

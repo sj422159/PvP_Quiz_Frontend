@@ -1,50 +1,98 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import io from "socket.io-client";
 import "./Quiz.css";
 
-const questions = [
-  {
-    question: "Who won the ICC Cricket World Cup 2011?",
-    options: ["Australia", "India", "Sri Lanka", "England"],
-    answer: "India",
-  },
-  {
-    question: "Who is known as the 'Master Blaster'?",
-    options: ["Virat Kohli", "Ricky Ponting", "Sachin Tendulkar", "AB de Villiers"],
-    answer: "Sachin Tendulkar",
-  },
-  {
-    question: "How many players are there in a cricket team?",
-    options: ["10", "11", "12", "9"],
-    answer: "11",
-  },
-  {
-    question: "What is the term for 3 wickets in 3 balls?",
-    options: ["Hat-trick", "Century", "Maiden", "Six"],
-    answer: "Hat-trick",
-  },
-];
+const socket = io("https://pvp-quiz-backend.onrender.com");
 
 const PvPQuiz = () => {
-  const [currentQ, setCurrentQ] = useState(0);
-  const [runs, setRuns] = useState(0);
-  const [wickets, setWickets] = useState(0);
+  const [roomId, setRoomId] = useState("");
+  const [playerId, setPlayerId] = useState("");
+  const [players, setPlayers] = useState([]);
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
+  const [scores, setScores] = useState([]);
+  const [roomInput, setRoomInput] = useState("");
 
-  const handleAnswer = (option) => {
-    if (gameOver) return;
-    if (option === questions[currentQ].answer) {
-      setRuns(runs + 4);
-    } else {
-      setWickets(wickets + 1);
-      if (wickets + 1 >= 3) {
-        setGameOver(true);
-      }
-    }
-    if (currentQ + 1 < questions.length) {
-      setCurrentQ(currentQ + 1);
-    } else {
+  useEffect(() => {
+    socket.on("connect", () => {
+      setPlayerId(socket.id);
+    });
+
+    socket.on("playersUpdate", (playerList) => {
+      setPlayers(playerList);
+    });
+
+    socket.on("startQuiz", () => {
+      setGameStarted(true);
+    });
+
+    socket.on("quizQuestions", (qs) => {
+      setQuestions(qs);
+      setCurrentQuestionIndex(0);
+    });
+
+    socket.on("showLeaderboard", (playerList) => {
+      setScores(playerList);
       setGameOver(true);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  const createRoom = async () => {
+    const res = await fetch("https://pvp-quiz-backend.onrender.com/createroom", {
+      method: "POST",
+    });
+    const data = await res.json();
+    setRoomId(data.roomId);
+    socket.emit("joinRoom", { roomId: data.roomId, playerName: "Player-" + data.roomId });
+  };
+
+  const joinRoom = () => {
+    if (roomInput.trim()) {
+      setRoomId(roomInput.trim());
+      socket.emit("joinRoom", { roomId: roomInput.trim(), playerName: "Player-" + roomInput.trim() });
+    }
+  };
+
+  const startGame = () => {
+    if (players.length >= 2) {
+      socket.emit("startGame", { roomId });
+      const sampleQuestions = [
+        "What is LBW in cricket?",
+        "How many players in a cricket team?",
+        "Which country won the first World Cup?",
+      ];
+      socket.emit("sendQuestions", { roomId, questions: sampleQuestions });
+    }
+  };
+
+  const handleAnswer = (selected) => {
+    socket.emit("submitAnswer", { roomId, playerId, answer: selected });
+
+    // Score logic (you can change correct option logic)
+    if (selected === "A") {
+      socket.emit("updateScore", { roomId, playerId, runs: 6, wickets: 0 });
+    } else {
+      socket.emit("updateScore", { roomId, playerId, runs: 0, wickets: 1 });
+    }
+
+    // Move to next question
+    const nextIndex = currentQuestionIndex + 1;
+    if (nextIndex < questions.length) {
+      setTimeout(() => {
+        setCurrentQuestionIndex(nextIndex);
+      }, 1000); // delay for animation effect
+    } else {
+      // End Game after last question
+      setTimeout(() => {
+        socket.emit("endGame", { roomId });
+      }, 1000);
     }
   };
 
@@ -58,35 +106,71 @@ const PvPQuiz = () => {
         🏏 PvP Cricket Quiz
       </motion.h1>
 
-      <div className="card">
-        {!gameOver ? (
-          <>
-            <h2 className="question">{questions[currentQ].question}</h2>
-            <div className="options">
-              {questions[currentQ].options.map((opt) => (
-                <button
-                  key={opt}
-                  className="option-btn"
-                  onClick={() => handleAnswer(opt)}
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-          </>
-        ) : (
-          <div className="result">
-            <h2>🏆 Match Over</h2>
-            <p>Runs: {runs}</p>
-            <p>Wickets: {wickets}</p>
-          </div>
-        )}
-      </div>
+      {!roomId ? (
+        <div className="room-selection">
+          <button className="option-btn" onClick={createRoom}>
+            Create Room
+          </button>
+          <input
+            type="text"
+            placeholder="Enter Room ID"
+            value={roomInput}
+            onChange={(e) => setRoomInput(e.target.value)}
+          />
+          <button className="option-btn" onClick={joinRoom}>
+            Join Room
+          </button>
+        </div>
+      ) : (
+        <>
+          <h2>Room ID: {roomId}</h2>
+          <h3>Players: {players.length}</h3>
+          <ul>
+            {players.map((p) => (
+              <li key={p.id}>{p.name}</li>
+            ))}
+          </ul>
 
-      <div className="score">
-        <p>Runs: {runs}</p>
-        <p>Wickets: {wickets} / 3</p>
-      </div>
+          {!gameStarted ? (
+            <button
+              className="start-btn"
+              onClick={startGame}
+              disabled={players.length < 2}
+            >
+              {players.length < 2 ? "Waiting for Players..." : "Start Game"}
+            </button>
+          ) : !gameOver ? (
+            <>
+              <h2 className="question">
+                Q{currentQuestionIndex + 1}. {questions[currentQuestionIndex]}
+              </h2>
+              <div className="options">
+                {["A", "B", "C", "D"].map((opt) => (
+                  <button
+                    key={opt}
+                    className="option-btn"
+                    onClick={() => handleAnswer(opt)}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className="result">
+              <h2>🏆 Match Over - Leaderboard</h2>
+              {scores
+                .sort((a, b) => b.runs - a.runs)
+                .map((player, index) => (
+                  <p key={player.id}>
+                    {index + 1}. {player.name} - Runs: {player.runs} | Wickets:{" "}
+                    {player.wickets}
+                  </p>
+                ))}
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };

@@ -43,7 +43,7 @@ export default function App() {
         <Route path="/login" element={<Auth setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/game/:roomId" element={isAuthenticated ? <Game /> : <Navigate to="/login" />} />
         <Route path="/lobby" element={isAuthenticated ? <Lobby /> : <Navigate to="/login" />} />
-        <Route path="/PvPQuiz" element={isAuthenticated ? <PvPQuiz /> : <Navigate to="/login" />} />
+        <Route path="/PvPQuiz" element={<PvPQuiz />} />
         <Route path="/home" element={isAuthenticated ? <Home players={players} handleStart={handleStart} /> : <Navigate to="/login" />} />
       </Routes>
     </Router>
