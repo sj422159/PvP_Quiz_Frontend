@@ -81,7 +81,13 @@ const Lobby = ({ username }) => {
           </div>
 
           {room.players.length >= 2 ? (
-            <button className="start-btn" onClick={() => console.log("Game Start!")}>
+            <button
+              className="start-btn"
+              onClick={() => {
+                console.log("Game Start!");
+                window.location.href = "/Quiz";
+              }}
+            >
               Start Game
             </button>
           ) : (
