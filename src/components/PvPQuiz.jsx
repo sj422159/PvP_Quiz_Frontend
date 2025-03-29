@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import io from "socket.io-client";
 import "./Quiz.css";
 
@@ -15,6 +15,7 @@ const PvPQuiz = () => {
   const [gameOver, setGameOver] = useState(false);
   const [scores, setScores] = useState([]);
   const [roomInput, setRoomInput] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -37,6 +38,7 @@ const PvPQuiz = () => {
     socket.on("showLeaderboard", (playerList) => {
       setScores(playerList);
       setGameOver(true);
+      setShowModal(true);
     });
 
     return () => {
@@ -75,21 +77,18 @@ const PvPQuiz = () => {
   const handleAnswer = (selected) => {
     socket.emit("submitAnswer", { roomId, playerId, answer: selected });
 
-    // Score logic (you can change correct option logic)
     if (selected === "A") {
       socket.emit("updateScore", { roomId, playerId, runs: 6, wickets: 0 });
     } else {
       socket.emit("updateScore", { roomId, playerId, runs: 0, wickets: 1 });
     }
 
-    // Move to next question
     const nextIndex = currentQuestionIndex + 1;
     if (nextIndex < questions.length) {
       setTimeout(() => {
         setCurrentQuestionIndex(nextIndex);
-      }, 1000); // delay for animation effect
+      }, 1000);
     } else {
-      // End Game after last question
       setTimeout(() => {
         socket.emit("endGame", { roomId });
       }, 1000);
@@ -156,8 +155,25 @@ const PvPQuiz = () => {
                 ))}
               </div>
             </>
-          ) : (
-            <div className="result">
+          ) : null}
+        </>
+      )}
+
+      {/* 🏆 Modal for Leaderboard */}
+      <AnimatePresence>
+        {showModal && (
+          <motion.div
+            className="modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="modal-content"
+              initial={{ scale: 0.7, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.7, opacity: 0 }}
+            >
               <h2>🏆 Match Over - Leaderboard</h2>
               {scores
                 .sort((a, b) => b.runs - a.runs)
@@ -167,10 +183,16 @@ const PvPQuiz = () => {
                     {player.wickets}
                   </p>
                 ))}
-            </div>
-          )}
-        </>
-      )}
+              <button
+                className="option-btn"
+                onClick={() => window.location.reload()}
+              >
+                Play Again
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
