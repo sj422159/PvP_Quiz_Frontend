@@ -3,7 +3,7 @@ import Auth from "./Auth";
 import Home from "./components/Home";
 import Game from "./components/Game";
 import Lobby from "./components/Lobby"; 
-import Quiz from "./components/PvPQuiz"; // Import the Quiz component
+import PvPQuiz from "./components/PvPQuiz"; // Import the Quiz component
 import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import { Howl } from "howler";
@@ -43,7 +43,7 @@ export default function App() {
         <Route path="/login" element={<Auth setIsAuthenticated={setIsAuthenticated} />} />
         <Route path="/game/:roomId" element={isAuthenticated ? <Game /> : <Navigate to="/login" />} />
         <Route path="/lobby" element={isAuthenticated ? <Lobby /> : <Navigate to="/login" />} />
-        <Route path="/Quiz" element={isAuthenticated ? <Quiz /> : <Navigate to="/login" />} />
+        <Route path="/PvPQuiz" element={isAuthenticated ? <PvPQuiz /> : <Navigate to="/login" />} />
         <Route path="/home" element={isAuthenticated ? <Home players={players} handleStart={handleStart} /> : <Navigate to="/login" />} />
       </Routes>
     </Router>
