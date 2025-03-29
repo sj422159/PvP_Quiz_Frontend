@@ -40,7 +40,7 @@ const Home = ({ players }) => {
 };
 
 
-  const qrLink = "https://hackfront-theta.vercel.app/";
+  const qrLink = "https://tecryst-edu.vercel.app/";
 
   return (
     <div style={styles.container}>
