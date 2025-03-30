@@ -108,16 +108,22 @@ const Home = ({ players }) => {
             </button>
           </div>
           <div style={styles.frame}>
-            <div style={styles.frameIcon}><FaGraduationCap size={40} /></div>
-            <h3 style={styles.frameTitle}>Doubt Solver</h3>
-            <p style={styles.frameDescription}>
-              Get your magical doubts resolved by experienced wizards and professors. 
-              Ask questions and find answers to enhance your wizarding knowledge.
-            </p>
-            <button style={styles.frameButton} onClick={handleExploreClasses}>
-              Solve Doubts
-            </button>
-          </div>
+  <div style={styles.frameIcon}><FaGraduationCap size={40} /></div>
+  <h3 style={styles.frameTitle}>Doubt Solver</h3>
+  <p style={styles.frameDescription}>
+    Get your magical doubts resolved by experienced wizards and professors. 
+    Ask questions and find answers to enhance your wizarding knowledge.
+  </p>
+  <button
+    style={styles.frameButton}
+    onClick={() => {
+      window.location.href = "https://doubt-front-alpha.vercel.app/";
+    }}
+  >
+    Solve Doubts
+  </button>
+</div>
+
         </div>
         
         {/* <div style={styles.wizardCounter}>
