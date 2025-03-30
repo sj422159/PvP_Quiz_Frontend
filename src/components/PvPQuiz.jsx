@@ -16,6 +16,8 @@ const PvPQuiz = () => {
   const [scores, setScores] = useState([]);
   const [roomInput, setRoomInput] = useState("");
   const [showModal, setShowModal] = useState(false);
+  
+
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -299,7 +301,7 @@ const PvPQuiz = () => {
               
               {scores.length > 0 ? (
   scores
-    .sort((a, b) => b.score - a.score)
+    .sort((a, b) => (b.score || 0) - (a.score || 0)) // Ensure sorting works even if score is undefined
     .map((player, index) => (
       <p key={index} style={{
         margin: "10px 0",
@@ -310,12 +312,13 @@ const PvPQuiz = () => {
         border: "1px solid #4CAF50",
         textAlign: "left"
       }}>
-        {index + 1}. {player.name} - Score: {player.score}
+        {index + 1}. {player.name || "Unknown"} - Score: {player.score ?? "N/A"}
       </p>
     ))
 ) : (
-  <p>No scores available yet.</p>
+  <p>No scores available</p>
 )}
+
 
               
               <button
