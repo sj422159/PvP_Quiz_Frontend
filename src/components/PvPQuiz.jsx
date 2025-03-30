@@ -298,20 +298,21 @@ const PvPQuiz = () => {
               </h2>
               
               {scores
-                .sort((a, b) => b.runs - a.runs)
-                .map((player, index) => (
-                  <p key={player.id} style={{
-                    margin: "10px 0",
-                    padding: "15px",
-                    backgroundColor: "#1A472A",
-                    color: "#ACDCB6",
-                    borderRadius: "5px",
-                    border: "1px solid #4CAF50",
-                    textAlign: "left"
-                  }}>
-                    {index + 1}. {player.name} - House Points: {player.runs} | Incorrect Answers: {player.wickets}
-                  </p>
-                ))}
+  .sort((a, b) => b.score - a.score) // Ensure sorting uses correct score key
+  .map((player, index) => (
+    <p key={player.id} style={{
+      margin: "10px 0",
+      padding: "15px",
+      backgroundColor: "#1A472A",
+      color: "#ACDCB6",
+      borderRadius: "5px",
+      border: "1px solid #4CAF50",
+      textAlign: "left"
+    }}>
+      {index + 1}. {player.name} - Score: {player.score}
+    </p>
+  ))}
+
               
               <button
                 style={{...buttonStyle, marginTop: "20px"}}
