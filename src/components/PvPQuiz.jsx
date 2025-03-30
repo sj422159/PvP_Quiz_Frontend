@@ -40,7 +40,7 @@ const PvPQuiz = () => {
       setScores(playerList);
       setGameOver(true);
       // Directly navigate to the leaderboard without showing the modal
-      navigate("/leaderboard", { state: { scores: playerList } });
+      navigate("/leaderboards", { state: { scores: playerList } });
     });
 
     return () => {
