@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import supabase from "./supabaseClient"; // Ensure you have Supabase setup
+import supabase from "../supabaseClient"; // Ensure you have Supabase setup
 
 const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
