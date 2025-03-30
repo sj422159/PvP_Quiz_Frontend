@@ -34,13 +34,13 @@ const PvPQuiz = () => {
     socket.on("quizQuestions", (qs) => {
       setQuestions(qs);
       setCurrentQuestionIndex(0);
-    });
+    }); 
 
     socket.on("showLeaderboard", (playerList) => {
       setScores(playerList);
       setGameOver(true);
       // Directly navigate to the leaderboard without showing the modal
-      navigate("/leaderboards", { state: { scores: playerList } });
+      navigate("/leaderboard", { state: { scores: playerList } });
     });
 
     return () => {
