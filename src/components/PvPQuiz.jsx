@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import io from "socket.io-client";
 import "./Quiz.css";
+import { useNavigate } from "react-router-dom"; // Make sure to import useNavigate
 
 const socket = io("https://pvp-quiz-backend.onrender.com");
 
 const PvPQuiz = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
   const [roomId, setRoomId] = useState("");
   const [playerId, setPlayerId] = useState("");
   const [players, setPlayers] = useState([]);
@@ -15,9 +17,6 @@ const PvPQuiz = () => {
   const [gameOver, setGameOver] = useState(false);
   const [scores, setScores] = useState([]);
   const [roomInput, setRoomInput] = useState("");
-  const [showModal, setShowModal] = useState(false);
-  
-
 
   useEffect(() => {
     socket.on("connect", () => {
@@ -40,16 +39,14 @@ const PvPQuiz = () => {
     socket.on("showLeaderboard", (playerList) => {
       setScores(playerList);
       setGameOver(true);
-      setTimeout(() => {
-        navigate("/leaderboard", { state: { scores: playerList } });
-      }, 2000); // Delay navigation for better transition
+      // Directly navigate to the leaderboard without showing the modal
+      navigate("/leaderboard", { state: { scores: playerList } });
     });
-    
 
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [navigate]);
 
   const createRoom = async () => {
     const res = await fetch("https://pvp-quiz-backend.onrender.com/createroom", {
@@ -258,82 +255,6 @@ const PvPQuiz = () => {
           ) : null}
         </div>
       )}
-
-      {/* Modal for Leaderboard */}
-      <AnimatePresence>
-        {showModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(0,0,0,0.7)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              zIndex: 1000
-            }}
-          >
-            <motion.div
-              initial={{ scale: 0.7, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.7, opacity: 0 }}
-              style={{
-                backgroundColor: "rgba(10, 26, 16, 0.95)",
-                padding: "30px",
-                borderRadius: "10px",
-                maxWidth: "600px",
-                width: "90%",
-                boxShadow: "0 8px 16px rgba(0,0,0,0.8)",
-                border: "2px solid #4CAF50",
-                textAlign: "center"
-              }}
-            >
-              <h2 style={{ 
-                fontSize: "32px", 
-                color: "#4CAF50", 
-                marginBottom: "20px"
-              }}>
-                🏆 Challenge Complete - Leaderboard
-              </h2>
-              
-              {scores.length > 0 ? (
-  scores
-    .sort((a, b) => (b.score || 0) - (a.score || 0)) // Ensure sorting works even if score is undefined
-    .map((player, index) => (
-      <p key={index} style={{
-        margin: "10px 0",
-        padding: "15px",
-        backgroundColor: "#1A472A",
-        color: "#ACDCB6",
-        borderRadius: "5px",
-        border: "1px solid #4CAF50",
-        textAlign: "left"
-      }}>
-        {index + 1}. {player.name || "Unknown"} - Score: {player.score ?? "N/A"}
-      </p>
-    ))
-) : (
-  <p>No scores available</p>
-)}
-
-
-              
-              <button
-                style={{...buttonStyle, marginTop: "20px"}}
-                onClick={() => window.location.reload()}
-              >
-                New Challenge
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
