@@ -297,21 +297,25 @@ const PvPQuiz = () => {
                 🏆 Challenge Complete - Leaderboard
               </h2>
               
-              {scores
-  .sort((a, b) => b.score - a.score)
-  .map((player, index) => (
-    <p key={player.id} style={{
-      margin: "10px 0",
-      padding: "15px",
-      backgroundColor: "#1A472A",
-      color: "#ACDCB6",
-      borderRadius: "5px",
-      border: "1px solid #4CAF50",
-      textAlign: "left"
-    }}>
-      {index + 1}. {player.name} - Score: {player.score}
-    </p>
-  ))}
+              {scores.length > 0 ? (
+  scores
+    .sort((a, b) => b.score - a.score)
+    .map((player, index) => (
+      <p key={index} style={{
+        margin: "10px 0",
+        padding: "15px",
+        backgroundColor: "#1A472A",
+        color: "#ACDCB6",
+        borderRadius: "5px",
+        border: "1px solid #4CAF50",
+        textAlign: "left"
+      }}>
+        {index + 1}. {player.name} - Score: {player.score}
+      </p>
+    ))
+) : (
+  <p>No scores available yet.</p>
+)}
 
               
               <button
