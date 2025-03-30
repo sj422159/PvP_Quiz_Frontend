@@ -40,13 +40,11 @@ const PvPQuiz = () => {
     socket.on("showLeaderboard", (playerList) => {
       setScores(playerList);
       setGameOver(true);
-      setShowModal(true);
+      setTimeout(() => {
+        navigate("/leaderboard", { state: { scores: playerList } });
+      }, 2000); // Delay navigation for better transition
     });
-
-    // Add this inside your useEffect
-socket.on("scoresUpdate", (updatedPlayers) => {
-  setScores(updatedPlayers);
-});
+    
 
     return () => {
       socket.disconnect();
@@ -84,7 +82,11 @@ socket.on("scoresUpdate", (updatedPlayers) => {
   const handleAnswer = (selected) => {
     socket.emit("submitAnswer", { roomId, playerId, answer: selected });
 
-    socket.emit("updateScore", { roomId, playerId, score: selected === "A" ? 10 : 0 });
+    if (selected === "A") {
+      socket.emit("updateScore", { roomId, playerId, runs: 6, wickets: 0 });
+    } else {
+      socket.emit("updateScore", { roomId, playerId, runs: 0, wickets: 1 });
+    }
 
     const nextIndex = currentQuestionIndex + 1;
     if (nextIndex < questions.length) {
@@ -302,7 +304,7 @@ socket.on("scoresUpdate", (updatedPlayers) => {
               
               {scores.length > 0 ? (
   scores
-    .sort((a, b) => ((b.score || 0) - (a.score || 0)))
+    .sort((a, b) => (b.score || 0) - (a.score || 0)) // Ensure sorting works even if score is undefined
     .map((player, index) => (
       <p key={index} style={{
         margin: "10px 0",
@@ -313,12 +315,14 @@ socket.on("scoresUpdate", (updatedPlayers) => {
         border: "1px solid #4CAF50",
         textAlign: "left"
       }}>
-        {index + 1}. {player.name || "Unknown"} - Score: {player.score || 0}
+        {index + 1}. {player.name || "Unknown"} - Score: {player.score ?? "N/A"}
       </p>
     ))
 ) : (
   <p>No scores available</p>
 )}
+
+
               
               <button
                 style={{...buttonStyle, marginTop: "20px"}}
