@@ -298,7 +298,7 @@ const PvPQuiz = () => {
               </h2>
               
               {scores
-  .sort((a, b) => b.score - a.score) // Ensure sorting uses correct score key
+  .sort((a, b) => b.score - a.score)
   .map((player, index) => (
     <p key={player.id} style={{
       margin: "10px 0",
