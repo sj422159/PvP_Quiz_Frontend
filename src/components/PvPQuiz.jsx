@@ -35,8 +35,14 @@ const PvPQuiz = () => {
       setCurrentQuestionIndex(0);
     });
 
+    // Add handler for score updates
+    socket.on("scoreUpdate", (updatedPlayers) => {
+      setPlayers(updatedPlayers);
+    });
+
     socket.on("showLeaderboard", (playerList) => {
-      setScores(playerList);
+      // Use the current players state which should have updated scores
+      setScores(players);
       setGameOver(true);
       setShowModal(true);
     });
@@ -44,7 +50,7 @@ const PvPQuiz = () => {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [players]);
 
   const createRoom = async () => {
     const res = await fetch("https://pvp-quiz-backend.onrender.com/createroom", {
@@ -77,6 +83,7 @@ const PvPQuiz = () => {
   const handleAnswer = (selected) => {
     socket.emit("submitAnswer", { roomId, playerId, answer: selected });
 
+    // Assuming 'A' is the correct answer for this example
     if (selected === "A") {
       socket.emit("updateScore", { roomId, playerId, runs: 6, wickets: 0 });
     } else {
