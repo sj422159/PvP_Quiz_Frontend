@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import io from "socket.io-client";
-import "./PvPQuiz.css";
+import "./Quiz.css";
 
 const socket = io("https://pvp-quiz-backend.onrender.com");
 

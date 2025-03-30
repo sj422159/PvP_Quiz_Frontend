@@ -1,82 +1,112 @@
-.quiz-container {
-    min-height: 100vh;
-    background-color: #0c3b2e;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    color: white;
-  }
-  
-  .title {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-  }
-  
-  .card {
-    background: #1e4d3a;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-    width: 90%;
-    max-width: 500px;
-  }
-  
-  .question {
-    font-size: 1.2rem;
-    margin-bottom: 20px;
-  }
-  
+/* PvPQuiz.css - Basic styling for the Hogwarts Cricket Quiz */
+
+/* General styling */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+input, button {
+  font-family: inherit;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: rgba(10, 26, 16, 0.95);
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+  border: 2px solid #4CAF50;
+}
+
+/* Room selection */
+.room-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+/* Option buttons */
+.option-btn {
+  margin: 10px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+  background-color: #1A472A;
+  color: #ACDCB6;
+}
+
+.option-btn:hover {
+  transform: scale(1.02);
+}
+
+.option-btn:active {
+  transform: scale(0.98);
+}
+
+/* Start button */
+.start-btn {
+  margin: 20px 0;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+  background-color: #2D4F33;
+  color: #ACDCB6;
+}
+
+.start-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Question styling */
+.question {
+  font-size: 24px;
+  background-color: #1A472A;
+  color: #ACDCB6;
+  padding: 15px;
+  border-radius: 5px;
+  margin: 20px 0;
+}
+
+/* Options grid */
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
   .options {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
+    grid-template-columns: 1fr;
   }
-  
-  .option-btn {
-    background: #ffc107;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 1rem;
-  }
-  
-  .option-btn:hover {
-    background: #e0a800;
-  }
-  
-  .result {
-    font-size: 1.5rem;
-  }
-  
-  .score {
-    margin-top: 20px;
-    font-size: 1.2rem;
-  }
-  
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-  }
-  
-  .modal-content {
-    background: rgb(203, 10, 10);
-    padding: 30px;
-    border-radius: 20px;
-    text-align: center;
-    width: 90%;
-    max-width: 400px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-  }
-  
+}
