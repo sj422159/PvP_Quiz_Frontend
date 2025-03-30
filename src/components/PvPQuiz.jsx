@@ -310,7 +310,7 @@ const PvPQuiz = () => {
         border: "1px solid #4CAF50",
         textAlign: "left"
       }}>
-        {index + 1}. {player.name} - Score: {player.score}
+        {index + 1}. {player.name} - Score: {scores.length}
       </p>
     ))
 ) : (
