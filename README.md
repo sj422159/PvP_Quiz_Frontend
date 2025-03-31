@@ -2,6 +2,9 @@
 
 🚀 **A real-time multiplayer cricket-themed quiz game** with immersive 3D animations, sound effects, and seamless socket-based gameplay.  
 
+## 🌍 Live Demo  
+🔗 **Play Now**: [tecryst-edu.vercel.app](https://tecryst-edu.vercel.app/)  
+
 ## 📌 Features  
 ✅ **Multiplayer Mode** - Join via QR code and compete in real-time  
 ✅ **Cricket-Themed UI** - 3D stadium environment with realistic animations  
@@ -21,3 +24,6 @@
 ```bash
 https://github.com/sj422159/PvP_Quiz_Frontend.git
 cd pvp-cricket-quiz-frontend
+
+
+###
